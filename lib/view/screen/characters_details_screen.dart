@@ -1,6 +1,11 @@
-import 'package:breaking/constants/my_colors.dart';
-import 'package:breaking/data/models/characters_model.dart';
+import 'dart:math';
+
+import 'package:animated_text_kit/animated_text_kit.dart';
+import '../../business_logic/cubit/characters_cubit.dart';
+import '../../constants/my_colors.dart';
+import '../../data/models/characters_model.dart';
 import 'package:flutter/material.dart';
+import 'package:flutter_bloc/flutter_bloc.dart';
 
 class CharacterDetailsScreen extends StatelessWidget {
   final CharacterModel characterModel;
@@ -9,6 +14,8 @@ class CharacterDetailsScreen extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
+       BlocProvider.of<CharactersCubit>(context).getQuotes(characterModel.name);
+
     return Scaffold(
       backgroundColor: MyColors.myGrey,
       body: CustomScrollView(
@@ -38,6 +45,14 @@ class CharacterDetailsScreen extends StatelessWidget {
                       buildDivider(150),
                       characterInfo('Actor : ' , characterModel.actorName),
                       buildDivider(330),
+                      const SizedBox(
+                        height: 20,
+                      ),
+                      BlocBuilder<CharactersCubit,CharactersState>(
+                        builder: (context, state) {
+                          return checkIfQuotesAreLoaded(state) ;
+                        },
+                      )
                     ],
                   ),
                 ),
@@ -108,3 +123,48 @@ class CharacterDetailsScreen extends StatelessWidget {
     );
   }
 }
+
+Widget checkIfQuotesAreLoaded(CharactersState state) {
+  if (state is QuotesLoaded) {
+    return displayRandomQuoteOrEmptySpace(state);
+    
+  } else {
+    return showProgressIndicator();
+  }
+} 
+
+Widget displayRandomQuoteOrEmptySpace(state) {
+  var quotes = (state).quotes;
+  if(quotes.length != 0){
+    int randomQuoteIndex =Random().nextInt(quotes.length - 1);
+    return Center(
+      child: DefaultTextStyle(
+        textAlign: TextAlign.center,
+        style:const TextStyle(fontSize: 20,color: MyColors.myWhite,shadows: [
+          Shadow(
+            blurRadius: 7,
+            color: MyColors.myYellow,
+            offset: Offset(0,0)
+          )
+        ],),
+        child: AnimatedTextKit(
+          repeatForever: true,
+          animatedTexts: [
+            FlickerAnimatedText(quotes[randomQuoteIndex].quote)
+          ],
+        ),
+      ),
+    );
+  }else{
+    return Container();
+  }
+}
+
+Widget showProgressIndicator() {
+  return const Center(
+    child: CircularProgressIndicator(color: MyColors.myYellow ,),
+  );
+
+}
+
+

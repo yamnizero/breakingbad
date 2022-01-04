@@ -1,6 +1,7 @@
 import 'package:bloc/bloc.dart';
-import 'package:breaking/data/models/characters_model.dart';
-import 'package:breaking/data/repository/characters_repository.dart';
+import '../../data/models/characters_model.dart';
+import '../../data/models/quote.dart';
+import '../../data/repository/characters_repository.dart';
 import 'package:meta/meta.dart';
 
 part 'characters_state.dart';
@@ -11,11 +12,19 @@ final CharactersRepository charactersRepository;
 
   CharactersCubit(this.charactersRepository) : super(CharactersInitial());
 
+  //allCharacter
   List<CharacterModel> getAllCharacters(){
     charactersRepository.getAllCharacters().then((characters) {
      emit(CharactersLoaded(characters));
      this.characters = characters;
     });
     return characters;
+  }
+
+  //Quotes
+  void getQuotes(String charName){
+    charactersRepository.getCharacterQuotes(charName).then((quotes) {
+     emit(QuotesLoaded(quotes));
+    });
   }
 }

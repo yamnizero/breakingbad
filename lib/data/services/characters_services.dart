@@ -1,4 +1,4 @@
-import 'package:breaking/constants/constants.dart';
+import '../../constants/constants.dart';
 import 'package:dio/dio.dart';
 
 class CharactersServices{
@@ -15,10 +15,23 @@ class CharactersServices{
    dio = Dio(options);
 
   }
-  //services call
+  //services call characters
   Future<List<dynamic>> getAllCharacters() async {
    try {
      Response response = await dio.get('characters');
+     print(response.data.toString());
+     return response.data;
+   } catch (e) {
+    print(e.toString());
+    return [];
+   }
+  }
+
+   //services call quote 
+  Future<List<dynamic>> getCharacterQuotes(String charName) async {
+   try {
+     Response response = await dio.get('quote',queryParameters: {'author' : charName });
+    
      print(response.data.toString());
      return response.data;
    } catch (e) {

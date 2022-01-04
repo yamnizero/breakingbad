@@ -1,6 +1,6 @@
-import 'package:breaking/constants/constants.dart';
-import 'package:breaking/constants/my_colors.dart';
-import 'package:breaking/data/models/characters_model.dart';
+import '../../constants/constants.dart';
+import '../../constants/my_colors.dart';
+import '../../data/models/characters_model.dart';
 import 'package:flutter/material.dart';
 
 class CharacterItem extends StatelessWidget {
